@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'ACDrawer_Example' do
+  pod 'ACDrawer', :path => '../'
+
+  target 'ACDrawer_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
