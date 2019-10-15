@@ -1,0 +1,22 @@
+{
+  "name": "ACDrawer",
+  "version": "0.0.1",
+  "summary": "A short description of ACDrawer.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/Christian Ampe/ACDrawer",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "Christian Ampe": "christianampe@icloud.com"
+  },
+  "source": {
+    "git": "https://github.com/Christian Ampe/ACDrawer.git",
+    "tag": "0.0.1"
+  },
+  "platforms": {
+    "ios": "11.0"
+  },
+  "source_files": "ACDrawer/Classes/**/*"
+}

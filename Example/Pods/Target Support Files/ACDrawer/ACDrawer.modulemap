@@ -1,0 +1,6 @@
+framework module ACDrawer {
+  umbrella header "ACDrawer-umbrella.h"
+
+  export *
+  module * { export * }
+}

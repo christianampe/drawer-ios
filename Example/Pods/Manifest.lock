@@ -1,0 +1,16 @@
+PODS:
+  - ACDrawer (0.0.1)
+
+DEPENDENCIES:
+  - ACDrawer (from `../`)
+
+EXTERNAL SOURCES:
+  ACDrawer:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ACDrawer: 756aa78f96fb3ef5f5712d9c1a108c6b09126abb
+
+PODFILE CHECKSUM: 096e3af1a0ade338a5a7338062949bf721da650b
+
+COCOAPODS: 1.8.0
