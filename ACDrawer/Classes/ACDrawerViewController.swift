@@ -6,6 +6,13 @@ open class ACDrawerViewController: UIViewController {
     
     private var topConstraint: NSLayoutConstraint!
     
+    private var parentHeight: CGFloat = 0
+    
+    private var minimumHeight: CGFloat = 0
+    private var maximumHeight: CGFloat = 0
+    
+    private var minimumHeightPercentage: CGFloat = 0
+    private var maximumHeightPercentage: CGFloat = 0
 }
 
 // MARK: - Lifecyle Events
@@ -21,7 +28,15 @@ extension ACDrawerViewController {
 // MARK: - Public Methods
 
 public extension ACDrawerViewController {
-    func add(toParent parent: UIViewController) {
+    func add(toParent parent: UIViewController, minimum: CGFloat, maximum: CGFloat) {
+        parentHeight = parent.view.frame.height
+        
+        minimumHeightPercentage = minimum
+        maximumHeightPercentage = maximum
+        
+        minimumHeight = parentHeight * minimum
+        maximumHeight = parentHeight * maximum
+        
         parent.addChildViewController(self)
         
         let childView = view!
@@ -35,7 +50,7 @@ public extension ACDrawerViewController {
         childView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor).isActive = true
         childView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor).isActive = true
         
-        topConstraint = childView.topAnchor.constraint(equalTo: parentView.topAnchor, constant: 700)
+        topConstraint = parentView.bottomAnchor.constraint(equalTo: childView.topAnchor, constant: 400)
         topConstraint.isActive = true
         
         didMove(toParentViewController: self)
@@ -54,7 +69,7 @@ private extension ACDrawerViewController {
 
 private extension ACDrawerViewController {
     @objc func didPanView(_ selector: UIPanGestureRecognizer) {
-        topConstraint.constant += selector.translation(in: view).y
+        topConstraint.constant -= selector.translation(in: view).y
         selector.setTranslation(.zero, in: view)
     }
 }
