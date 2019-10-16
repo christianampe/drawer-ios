@@ -14,9 +14,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .black
+        view.backgroundColor = .white
         drawerViewController.view.backgroundColor = .darkGray
-        drawerViewController.add(toParent: self, minimum: 0.1, maximum: 0.9)
+        drawerViewController.add(toParent: self, height: (0.1, 0.9), opacity: (0.0, 0.9))
     }
 
 }

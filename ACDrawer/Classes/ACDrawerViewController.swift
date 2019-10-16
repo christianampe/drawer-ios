@@ -10,9 +10,15 @@ open class ACDrawerViewController: UIViewController {
     
     private var minimumHeight: CGFloat = 0
     private var maximumHeight: CGFloat = 0
+    private var heightDelta: CGFloat = 0
     
     private var minimumHeightPercentage: CGFloat = 0
     private var maximumHeightPercentage: CGFloat = 0
+    private var heightPercentageDelta: CGFloat = 0
+    
+    private var minimumOpacity: CGFloat = 0
+    private var maximumOpacity: CGFloat = 0
+    private var opacityDelta: CGFloat = 0
 }
 
 // MARK: - Lifecyle Events
@@ -28,14 +34,23 @@ extension ACDrawerViewController {
 // MARK: - Public Methods
 
 public extension ACDrawerViewController {
-    func add(toParent parent: UIViewController, minimum: CGFloat, maximum: CGFloat) {
+    func add(toParent parent: UIViewController,
+             height: (minimum: CGFloat, maximum: CGFloat),
+             opacity: ((minimum: CGFloat, maximum: CGFloat))) {
+        
         parentHeight = parent.view.frame.height
         
-        minimumHeightPercentage = minimum
-        maximumHeightPercentage = maximum
+        minimumHeightPercentage = height.minimum
+        maximumHeightPercentage = height.maximum
+        heightPercentageDelta = maximumHeightPercentage - minimumHeightPercentage
         
-        minimumHeight = parentHeight * minimum
-        maximumHeight = parentHeight * maximum
+        minimumHeight = parentHeight * minimumHeightPercentage
+        maximumHeight = parentHeight * maximumHeightPercentage
+        heightDelta = maximumHeight - minimumHeight
+        
+        minimumOpacity = opacity.minimum
+        maximumOpacity = opacity.maximum
+        opacityDelta = maximumOpacity - minimumOpacity
         
         parent.addChildViewController(self)
         
@@ -69,17 +84,34 @@ private extension ACDrawerViewController {
 
 private extension ACDrawerViewController {
     @objc func didPanView(_ selector: UIPanGestureRecognizer) {
-        let nextHeight = topConstraint.constant - selector.translation(in: view).y
+        let newHeight = requestedHeight(from: selector)
         
-        if nextHeight <= minimumHeight {
-            topConstraint.constant = minimumHeight
-        } else if nextHeight >= maximumHeight {
-            topConstraint.constant = maximumHeight
-        } else {
-            topConstraint.constant = nextHeight
-        }
+        animate(topConstraint, to: newHeight)
+        animate(parent, for: newHeight)
         
         selector.setTranslation(.zero, in: view)
+    }
+}
+
+private extension ACDrawerViewController {
+    func requestedHeight(from gesture: UIPanGestureRecognizer) -> CGFloat {
+        let requestedHeight = topConstraint.constant - gesture.translation(in: view).y
+        
+        if requestedHeight <= minimumHeight {
+            return minimumHeight
+        } else if requestedHeight >= maximumHeight {
+           return maximumHeight
+        } else {
+            return requestedHeight
+        }
+    }
+    
+    func animate(_ constraint: NSLayoutConstraint, to newHeight: CGFloat) {
+        constraint.constant = newHeight
+    }
+    
+    func animate(_ parent: UIViewController?, for newHeight: CGFloat) {
+        
     }
 }
 
