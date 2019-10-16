@@ -16,7 +16,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .black
         drawerViewController.view.backgroundColor = .darkGray
-        drawerViewController.add(toParent: self, minimum: 0.2, maximum: 0.8)
+        drawerViewController.add(toParent: self, minimum: 0.1, maximum: 0.9)
     }
 
 }

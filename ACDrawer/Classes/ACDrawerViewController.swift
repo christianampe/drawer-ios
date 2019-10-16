@@ -50,7 +50,7 @@ public extension ACDrawerViewController {
         childView.trailingAnchor.constraint(equalTo: parentView.trailingAnchor).isActive = true
         childView.bottomAnchor.constraint(equalTo: parentView.bottomAnchor).isActive = true
         
-        topConstraint = parentView.bottomAnchor.constraint(equalTo: childView.topAnchor, constant: 400)
+        topConstraint = parentView.bottomAnchor.constraint(equalTo: childView.topAnchor, constant: minimumHeight)
         topConstraint.isActive = true
         
         didMove(toParentViewController: self)
@@ -69,7 +69,16 @@ private extension ACDrawerViewController {
 
 private extension ACDrawerViewController {
     @objc func didPanView(_ selector: UIPanGestureRecognizer) {
-        topConstraint.constant -= selector.translation(in: view).y
+        let nextHeight = topConstraint.constant - selector.translation(in: view).y
+        
+        if nextHeight <= minimumHeight {
+            topConstraint.constant = minimumHeight
+        } else if nextHeight >= maximumHeight {
+            topConstraint.constant = maximumHeight
+        } else {
+            topConstraint.constant = nextHeight
+        }
+        
         selector.setTranslation(.zero, in: view)
     }
 }
@@ -80,12 +89,4 @@ private extension ACDrawerViewController {
         view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         view.layer.masksToBounds = true
     }
-}
-
-private extension ACDrawerViewController {
-    
-}
-
-private extension ACDrawerViewController {
-    
 }
