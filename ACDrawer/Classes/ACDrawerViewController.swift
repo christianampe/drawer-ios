@@ -2,6 +2,12 @@ import UIKit
 
 open class ACDrawerViewController: UIViewController {
     
+    public var animationDuration: TimeInterval = 0.3
+    public var animationDelay: TimeInterval = 0
+    public var animationSpringDamping: CGFloat = 0.75
+    public var animationInitialSpringVelocity: CGFloat = 0
+    public var animationOptions: UIView.AnimationOptions = [.curveEaseInOut]
+    
     weak var delegate: ACDrawerViewControllerDelegate?
     
     private var topConstraint: NSLayoutConstraint!
@@ -84,12 +90,22 @@ private extension ACDrawerViewController {
 
 private extension ACDrawerViewController {
     @objc func didPanView(_ selector: UIPanGestureRecognizer) {
-        let newHeight = requestedHeight(from: selector)
-        
-        animate(topConstraint, to: newHeight)
-        animate(parent, for: newHeight)
-        
-        selector.setTranslation(.zero, in: view)
+        switch selector.state {
+        case .ended:
+            let verticalVelocity = selector.velocity(in: view).y
+            let isExpanding = verticalVelocity < 0
+            
+            animate(topConstraint, to: isExpanding ? maximumHeight : minimumHeight, with: verticalVelocity)
+            
+        default:
+            let newHeight = requestedHeight(from: selector)
+            
+            update(topConstraint, to: newHeight)
+            update(parent!, for: newHeight)
+            
+            selector.setTranslation(.zero, in: view)
+            
+        }
     }
 }
 
@@ -105,13 +121,28 @@ private extension ACDrawerViewController {
             return requestedHeight
         }
     }
-    
-    func animate(_ constraint: NSLayoutConstraint, to newHeight: CGFloat) {
+}
+
+private extension ACDrawerViewController {
+    func update(_ constraint: NSLayoutConstraint, to newHeight: CGFloat) {
         constraint.constant = newHeight
     }
     
-    func animate(_ parent: UIViewController?, for newHeight: CGFloat) {
+    func update(_ parent: UIViewController, for newHeight: CGFloat) {
         
+    }
+}
+
+private extension ACDrawerViewController {
+    func animate(_ constraint: NSLayoutConstraint, to newHeight: CGFloat, with velocity: CGFloat) {
+        constraint.constant = newHeight
+        UIView.animate(withDuration: animationDuration,
+                       delay: animationDelay,
+                       usingSpringWithDamping: animationSpringDamping,
+                       initialSpringVelocity: animationInitialSpringVelocity,
+                       options: animationOptions,
+                       animations: parent!.view.layoutIfNeeded,
+                       completion: nil)
     }
 }
 
